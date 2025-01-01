@@ -22,6 +22,7 @@ func StopDispatchWorker(done chan bool) {
 }
 
 func dispatchWorker(client *redis.Client, done chan bool, interval int) {
+	fmt.Println("Dispatch Worker Started")
 	exp_client := Connect()
 	for {
 		select {
