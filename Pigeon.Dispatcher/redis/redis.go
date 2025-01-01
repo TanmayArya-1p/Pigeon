@@ -42,21 +42,35 @@ func fetchOrders(client *redis.Client) []models.Dispatch {
 	return dispatches
 }
 
-func popOrder(client *redis.Client) models.Dispatch {
+func popOrder(client *redis.Client, ref_epoch int64) models.Dispatch {
 	dispatches := fetchOrders(client)
 	if len(dispatches) == 0 {
 		return models.Dispatch{}
 	}
 	dispatch := dispatches[0]
-	dispatches = dispatches[1:]
-	val, _ := json.Marshal(dispatches)
-	client.Set(ctx, "orders", val, 0)
-	return dispatch
+	if ref_epoch >= dispatch.ScheduledAt {
+		dispatches = dispatches[1:]
+		val, _ := json.Marshal(dispatches)
+		client.Set(ctx, "orders", val, 0)
+		return dispatch
+	} else {
+		return models.Dispatch{}
+	}
 }
 
 func pushOrder(client *redis.Client, dispatch models.Dispatch) []models.Dispatch {
 	dispatches := fetchOrders(client)
-	dispatches = append(dispatches, dispatch)
+	i := 0
+	j := len(dispatches)
+	for i < j {
+		mid := (i + j) / 2
+		if dispatches[mid].ScheduledAt < dispatch.ScheduledAt {
+			i = mid + 1
+		} else {
+			j = mid
+		}
+	}
+	dispatches = append(dispatches[:i], append([]models.Dispatch{dispatch}, dispatches[i:]...)...)
 	val, _ := json.Marshal(dispatches)
 	client.Set(ctx, "orders", val, 0)
 	return dispatches
