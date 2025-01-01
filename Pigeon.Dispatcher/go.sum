@@ -4,6 +4,8 @@ github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f h1:lO4WD4F/r
 github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f/go.mod h1:cuUVRXasLTGF7a8hSLbxyZXjz+1KgoB3wDUb6vlszIc=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
 github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
+github.com/mijara/exponent-server-sdk-golang v0.0.0-20200421150236-2f511af6c076 h1:DL0rcU6ilrUT+4N+ovzZw+UFuTKFXyfLFv5UhSZcM6Q=
+github.com/mijara/exponent-server-sdk-golang v0.0.0-20200421150236-2f511af6c076/go.mod h1:qjITWq5E4DzuiykVWO8ILl3VqN+TMl3pjBZes86e3gU=
 github.com/oliveroneill/exponent-server-sdk-golang v0.0.0-20210823140141-d050598be512 h1:/ZSmjwl1inqsiHMhn+sPlEtSHdVTf+TH3LNGGdMQ/vA=
 github.com/oliveroneill/exponent-server-sdk-golang v0.0.0-20210823140141-d050598be512/go.mod h1:Isv/48UnAjtxS8FD80Bito3ZJqZRyIMxKARIEITfW4k=
 github.com/redis/go-redis/v9 v9.7.0 h1:HhLSs+B6O021gwzl+locl0zEDnyNkxMtf/Z3NNBMa9E=

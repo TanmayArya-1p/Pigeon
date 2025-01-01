@@ -1,10 +1,11 @@
-package redis
+package rd
 
 import (
 	"context"
 	"encoding/json"
 	"log"
 	"os"
+	"time"
 
 	"Pigeon.Dispatcher/models"
 	"github.com/joho/godotenv"
@@ -13,7 +14,7 @@ import (
 
 var ctx = context.Background()
 
-func connect() *redis.Client {
+func Connect() *redis.Client {
 	godotenv.Load()
 	var client *redis.Client = redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_HOST"),
@@ -28,11 +29,11 @@ func connect() *redis.Client {
 	return client
 }
 
-func close(client *redis.Client) {
+func Close(client *redis.Client) {
 	client.Close()
 }
 
-func fetchOrders(client *redis.Client) []models.Dispatch {
+func FetchOrders(client *redis.Client) []models.Dispatch {
 	val, _ := client.Get(ctx, "orders").Result()
 	dispatches := make([]models.Dispatch, 0, 10)
 	err := json.Unmarshal([]byte(val), &dispatches)
@@ -42,23 +43,26 @@ func fetchOrders(client *redis.Client) []models.Dispatch {
 	return dispatches
 }
 
-func popOrder(client *redis.Client, ref_epoch int64) models.Dispatch {
+func PopOrder(client *redis.Client, ref_epoch int64) (models.Dispatch, bool) {
+	if ref_epoch == -1 {
+		ref_epoch = time.Now().Unix()
+	}
 	dispatches := fetchOrders(client)
 	if len(dispatches) == 0 {
-		return models.Dispatch{}
+		return models.Dispatch{}, false
 	}
 	dispatch := dispatches[0]
 	if ref_epoch >= dispatch.ScheduledAt {
 		dispatches = dispatches[1:]
 		val, _ := json.Marshal(dispatches)
 		client.Set(ctx, "orders", val, 0)
-		return dispatch
+		return dispatch, true
 	} else {
-		return models.Dispatch{}
+		return models.Dispatch{}, false
 	}
 }
 
-func pushOrder(client *redis.Client, dispatch models.Dispatch) []models.Dispatch {
+func PushOrder(client *redis.Client, dispatch models.Dispatch) []models.Dispatch {
 	dispatches := fetchOrders(client)
 	i := 0
 	j := len(dispatches)

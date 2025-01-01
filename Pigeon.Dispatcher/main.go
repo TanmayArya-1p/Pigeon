@@ -1,15 +1,10 @@
 package main
 
 import (
-    "os"
-    "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
-
-type 
-
-
 func main() {
-  godotenv.Load()
+	godotenv.Load()
 
 }
