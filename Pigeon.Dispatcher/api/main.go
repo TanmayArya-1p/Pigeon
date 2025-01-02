@@ -52,6 +52,28 @@ func PushMessageValidationMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+func CampaignDispatchValidator(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		var order models.CampaignDispatch
+		if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
+			http.Error(w, "Bad Request: Invalid JSON", http.StatusBadRequest)
+			return
+		}
+		if err := order.Validate(); err != nil {
+			http.Error(w, "Bad Request: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		ctx := context.WithValue(r.Context(), "camporder", order)
+		r = r.WithContext(ctx)
+
+		next(w, r)
+	}
+}
+
 var middlewares = []func(http.HandlerFunc) http.HandlerFunc{PushMessageValidationMiddleware, authMiddleware}
 var client *redis.Client
 
@@ -154,18 +176,10 @@ func StatusDispatcherHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CampaignDispatchHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		return
-	}
 	var callbackURL = r.URL.Query().Get("callback")
-	var order models.CampaignDispatch
-	if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
-		http.Error(w, "Bad Request: Invalid JSON", http.StatusBadRequest)
-		return
-	}
-	if err := order.Validate(); err != nil {
-		http.Error(w, "Bad Request: "+err.Error(), http.StatusBadRequest)
+	order, ok := r.Context().Value("camporder").(models.CampaignDispatch)
+	if !ok {
+		http.Error(w, "Internal Server Error: Invalid order type", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -184,7 +198,7 @@ func CampaignDispatchHandler(w http.ResponseWriter, r *http.Request) {
 			clt := http.Client{
 				Timeout: 5 * time.Second,
 			}
-			req, _ := http.NewRequest("POST", callbackURL, strings.NewReader(fmt.Sprintf(`{"tracker_id": "%s"}`, trackerID)))
+			req, _ := http.NewRequest("POST", callbackURL, strings.NewReader(fmt.Sprintf(`{"tracker_id": "%s","message" : "success"}`, trackerID)))
 			req.Header.Set("Content-Type", "application/json")
 			resp, err := clt.Do(req)
 			if err != nil {
@@ -207,6 +221,7 @@ func ServeAPI() {
 		h = middleware(h)
 	}
 	http.HandleFunc("/dispatch", h)
+	http.HandleFunc("/campaign", authMiddleware(CampaignDispatchValidator(CampaignDispatchHandler)))
 	http.HandleFunc("/pingAuth", authMiddleware(ping))
 	http.HandleFunc("/ping", ping)
 	http.HandleFunc("/start", authMiddleware(StartDispatcherHandler))
