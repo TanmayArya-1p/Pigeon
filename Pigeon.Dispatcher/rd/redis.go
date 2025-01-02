@@ -47,7 +47,7 @@ func PopOrder(client *redis.Client, ref_epoch int64) (models.Dispatch, bool) {
 	if ref_epoch == -1 {
 		ref_epoch = time.Now().Unix()
 	}
-	dispatches := fetchOrders(client)
+	dispatches := FetchOrders(client)
 	if len(dispatches) == 0 {
 		return models.Dispatch{}, false
 	}
@@ -63,7 +63,7 @@ func PopOrder(client *redis.Client, ref_epoch int64) (models.Dispatch, bool) {
 }
 
 func PushOrder(client *redis.Client, dispatch models.Dispatch) []models.Dispatch {
-	dispatches := fetchOrders(client)
+	dispatches := FetchOrders(client)
 	i := 0
 	j := len(dispatches)
 	for i < j {
