@@ -31,6 +31,7 @@ type NotificationResponse struct {
 }
 
 func SendNotification(client *expo.PushClient, message expo.PushMessage) NotificationResponse {
+	message.Priority = expo.HighPriority
 	response, _ := client.Publish(&message)
 	if response.Status == "error" {
 		fmt.Printf("Error sending notification\n")
