@@ -22,7 +22,7 @@ import (
 func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		secret_rec := r.Header.Get("Authorization")
-		if secret_rec != os.Getenv("AUTH_SECRET") {
+		if secret_rec != os.Getenv("DISPATCHER_AUTH_SECRET") {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
