@@ -30,9 +30,6 @@ func exponentPushMessageValidator(pm expo.PushMessage) bool {
 	if pm.Body == "" {
 		return false
 	}
-	if len(pm.Data) == 0 {
-		return false
-	}
 	return true
 }
 

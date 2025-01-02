@@ -84,9 +84,7 @@ func PushOrder(client *redis.Client, dispatch models.Dispatch) []models.Dispatch
 		}
 	}
 	dispatches = append(dispatches[:i], append([]models.Dispatch{dispatch}, dispatches[i:]...)...)
-	println("SET GAUGE TO ", float64(len(dispatches)))
 	pendingGauge.Set(float64(len(dispatches)))
-	println("DONE")
 	val, _ := json.Marshal(dispatches)
 	client.Set(ctx, "orders", val, 0)
 	return dispatches

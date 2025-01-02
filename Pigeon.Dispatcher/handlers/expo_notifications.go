@@ -19,9 +19,6 @@ var (
 	})
 )
 
-// TODO: PROMETHEUS TRACKER DELETED USERS
-// TODO: PROMETHEUS TRACK DISPATCHED NOTIFICATIONS
-
 func Connect() *expo.PushClient {
 	client := expo.NewPushClient(nil)
 	return client
