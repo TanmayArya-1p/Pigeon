@@ -12,12 +12,12 @@ load_dotenv()
 app = FastAPI(title="Pigeon Schema Engine" , version="0.1.0")
 crud = SchemaCRUD()
 
-# @app.middleware("http")
-# async def AuthMiddleware(request: Request, next):
-#     auth = request.headers.get('Authorization')        
-#     if auth != os.environ["SCHEMA_ENGINE_AUTH_SECRET"]:
-#         return JSONResponse(None, 401, {"WWW-Authenticate": "Basic"})
-#     return await next(request)
+@app.middleware("http")
+async def AuthMiddleware(request: Request, next):
+    auth = request.headers.get('Authorization')        
+    if auth != os.environ["SCHEMA_ENGINE_AUTH_SECRET"] and request.url.path not in ["/docs" , "/redoc" , "/openapi.json"]:
+        return JSONResponse("Unauthorized", 401)
+    return await next(request)
 
 
 @app.get("/schema")

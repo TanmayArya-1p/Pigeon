@@ -124,10 +124,11 @@ func StopDispatcherHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 type DispatcherStatus struct {
-	Running        bool `json:"running"`
-	Pending        int  `json:"pending"`
-	Served         int  `json:"served"`
-	Deleted_Tokens int  `json:"deleted_tokens"`
+	Running        bool              `json:"running"`
+	Pending        int               `json:"pending"`
+	Served         int               `json:"served"`
+	Deleted_Tokens int               `json:"deleted_tokens"`
+	Pending_Orders []models.Dispatch `json:"pending_orders"`
 }
 
 func (DispatcherStatus) fetchMetrics() (DispatcherStatus, error) {
@@ -158,6 +159,7 @@ func (DispatcherStatus) fetchMetrics() (DispatcherStatus, error) {
 			}
 		}
 	}
+	status.Pending_Orders = rd.FetchOrders(client)
 	if err := scanner.Err(); err != nil {
 		return DispatcherStatus{}, err
 	}
