@@ -9,10 +9,17 @@ import (
 
 	"Pigeon.Dispatcher/models"
 	"github.com/joho/godotenv"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/redis/go-redis/v9"
 )
 
 var ctx = context.Background()
+var (
+	pendingGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "pigeon_dispatcher_pending_orders",
+		Help: "Number of pending orders in redis database",
+	})
+)
 
 func Connect() *redis.Client {
 	godotenv.Load()
@@ -26,6 +33,7 @@ func Connect() *redis.Client {
 	if len(val) == 0 {
 		client.Set(ctx, "orders", "[]", 0)
 	}
+	prometheus.MustRegister(pendingGauge)
 	return client
 }
 
@@ -40,6 +48,7 @@ func FetchOrders(client *redis.Client) []models.Dispatch {
 	if err != nil {
 		log.Fatalf("Error unmarshalling JSON: %v", err)
 	}
+	pendingGauge.Set(float64(len(dispatches)))
 	return dispatches
 }
 
@@ -75,6 +84,9 @@ func PushOrder(client *redis.Client, dispatch models.Dispatch) []models.Dispatch
 		}
 	}
 	dispatches = append(dispatches[:i], append([]models.Dispatch{dispatch}, dispatches[i:]...)...)
+	println("SET GAUGE TO ", float64(len(dispatches)))
+	pendingGauge.Set(float64(len(dispatches)))
+	println("DONE")
 	val, _ := json.Marshal(dispatches)
 	client.Set(ctx, "orders", val, 0)
 	return dispatches
