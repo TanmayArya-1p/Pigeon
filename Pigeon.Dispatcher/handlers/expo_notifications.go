@@ -18,9 +18,9 @@ type NotificationResponse struct {
 }
 
 func SendNotification(client *expo.PushClient, message expo.PushMessage) NotificationResponse {
-	response, err := client.Publish(&message)
+	response, _ := client.Publish(&message)
 	if response.Status == "error" {
-		fmt.Printf("Error sending notification: %v\n", err)
+		fmt.Printf("Error sending notification\n")
 		return NotificationResponse{Response: nil, isExpired: true, ExpoToken: message.To}
 	}
 	return NotificationResponse{Response: &response, isExpired: false, ExpoToken: message.To}

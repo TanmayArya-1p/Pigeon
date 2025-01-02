@@ -2,9 +2,6 @@ package handlers
 
 import (
 	"fmt"
-	"net/http"
-	"os"
-	"strings"
 	"time"
 
 	"Pigeon.Dispatcher/rd"
@@ -34,13 +31,14 @@ func dispatchWorker(client *redis.Client, done chan bool, interval int) {
 			if status {
 				noti_resp := SendNotification(exp_client, curr.Message)
 				if noti_resp.isExpired {
-					clt := http.Client{
-						Timeout: 5 * time.Second,
-					}
-					req, _ := http.NewRequest("POST", os.Getenv("DELETE_TOKEN_WEBHOOK"), strings.NewReader(fmt.Sprintf(`{"TOKEN": "%s"}`, curr.Message.To)))
-					req.Header.Set("Content-Type", "application/json")
-					resp, _ := clt.Do(req)
-					resp.Body.Close()
+					// clt := http.Client{
+					// 	Timeout: 5 * time.Second,
+					// }
+					// req, _ := http.NewRequest("POST", os.Getenv("DELETE_TOKEN_WEBHOOK"), strings.NewReader(fmt.Sprintf(`{"TOKEN": "%s"}`, curr.Message.To)))
+					// req.Header.Set("Content-Type", "application/json")
+					// resp, _ := clt.Do(req)
+					// resp.Body.Close()
+					fmt.Printf("Possible Cause: Expo Token %s is expired\n", curr.Message.To)
 				}
 			}
 			time.Sleep(time.Duration(interval) * time.Second)

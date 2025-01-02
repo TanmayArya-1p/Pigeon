@@ -40,7 +40,7 @@ func (d *Dispatch) Validate() error {
 	if d.ScheduledAt <= 0 {
 		return errors.New("scheduled_at must be a positive integer")
 	}
-	if exponentTokenValidator(d.Message.To) || len(d.Message.To) == 0 {
+	if (!exponentTokenValidator(d.Message.To)) || len(d.Message.To) == 0 {
 		return errors.New("Invalid ExponentPushToken")
 	}
 	if !exponentPushMessageValidator(d.Message) {

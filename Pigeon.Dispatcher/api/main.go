@@ -9,6 +9,7 @@ import (
 
 	"github.com/joho/godotenv"
 
+	"Pigeon.Dispatcher/handlers"
 	"Pigeon.Dispatcher/models"
 	rd "Pigeon.Dispatcher/rd"
 	"github.com/redis/go-redis/v9"
@@ -64,6 +65,52 @@ func ping(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Pong")
 }
 
+var worker chan bool
+var running = false
+
+func StartDispatcherHandler(w http.ResponseWriter, r *http.Request) {
+	if running {
+		http.Error(w, "Worker Already Running", http.StatusConflict)
+		return
+	}
+
+	interval := 30
+	if r.Method != "GET" {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	running = true
+	if r.URL.Query().Get("interval") != "" {
+		fmt.Sscanf(r.URL.Query().Get("interval"), "%d", &interval)
+	}
+	worker = handlers.StartDispatchWorker(client, interval)
+	fmt.Fprintln(w, "Dispatch Worker Started", interval)
+}
+
+func StopDispatcherHandler(w http.ResponseWriter, r *http.Request) {
+	if !running {
+		http.Error(w, "Worker Not Running", http.StatusConflict)
+		return
+	}
+	handlers.StopDispatchWorker(worker)
+	running = false
+	fmt.Fprintln(w, "Dispatch Worker Terminated")
+}
+
+type DispatcherStatus struct {
+	Running bool `json:"running"`
+	Pending int  `json:"pending"`
+	Served  int  `json:"served"`
+}
+
+func StatusDispatcherHandler(w http.ResponseWriter, r *http.Request) {
+	if running {
+		fmt.Fprintln(w, "Worker Running")
+	} else {
+		fmt.Fprintln(w, "Worker Not Running")
+	}
+}
+
 func ServeAPI() {
 	client = rd.Connect()
 	defer client.Close()
@@ -74,6 +121,8 @@ func ServeAPI() {
 	http.HandleFunc("/dispatch", h)
 	http.HandleFunc("/pingAuth", authMiddleware(ping))
 	http.HandleFunc("/ping", ping)
+	http.HandleFunc("/start", authMiddleware(StartDispatcherHandler))
+	http.HandleFunc("/stop", authMiddleware(StopDispatcherHandler))
 
 	http.ListenAndServe(":8000", nil)
 }
