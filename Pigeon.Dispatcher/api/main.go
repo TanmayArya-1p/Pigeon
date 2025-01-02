@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"context"
@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-
-	"github.com/joho/godotenv"
 
 	"Pigeon.Dispatcher/handlers"
 	"Pigeon.Dispatcher/models"
@@ -128,7 +126,7 @@ func ServeAPI() {
 	http.ListenAndServe(":8000", nil)
 }
 
-func main() {
-	godotenv.Load()
-	ServeAPI()
-}
+// func main() {
+// 	godotenv.Load()
+// 	ServeAPI()
+// }
