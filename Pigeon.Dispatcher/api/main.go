@@ -3,8 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/joho/godotenv"
 
 	"Pigeon.Dispatcher/models"
 	rd "Pigeon.Dispatcher/rd"
@@ -54,6 +57,11 @@ func dispatchHTTPHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rd.PushOrder(client, order)
+	fmt.Fprintln(w, "Order pushed successfully")
+}
+
+func ping(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Pong")
 }
 
 func ServeAPI() {
@@ -64,9 +72,13 @@ func ServeAPI() {
 		h = middleware(h)
 	}
 	http.HandleFunc("/dispatch", h)
+	http.HandleFunc("/pingAuth", authMiddleware(ping))
+	http.HandleFunc("/ping", ping)
+
 	http.ListenAndServe(":8000", nil)
 }
 
 func main() {
+	godotenv.Load()
 	ServeAPI()
 }
