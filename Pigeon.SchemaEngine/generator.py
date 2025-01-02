@@ -27,31 +27,39 @@ class GenSchema:
 class ExponentPushToken(str):
     def __init__(self, token: str):
         self.__validateExpoToken(token)
-        super().__init__(token)
+        str.__new__(ExponentPushToken, token)
 
-    def __validateExpoToken(token :str):
+    def __validateExpoToken(self,token :str):
         if not token.startswith("ExponentPushToken["):
             raise ValueError("Invalid Expo token")
         if not token.endswith("]"):
             raise ValueError("Invalid Expo token")
 
+    def __str__(self):
+        return super().__str__()
+    
+    def __repr__(self):
+        return super().__repr__()
 
 
 def dispatchGenSchema(gschema: GenSchema , targets : list ,  scheduled_at : int):
     try:
+
         url = f"http://localhost:{os.environ["DISPATCHER_PORT"]}/campaign"
+        #print(url , os.environ)
         payload = json.dumps({
         "scheduled_at": scheduled_at,
         "to": targets,
         "message": {
-            "title": GenSchema.schema.title,
-            "body": GenSchema.schema.body
+            "title": gschema.schema.title,
+            "body": gschema.schema.body
         }
         })
         headers = {
         'Authorization':  os.environ["DISPATCHER_AUTH_SECRET"],
         'Content-Type': 'application/json'
         }
+
         response = requests.request("POST", url, headers=headers, data=payload)
         return (response.json(), response.status_code)
     except:

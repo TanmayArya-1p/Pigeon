@@ -2,16 +2,15 @@ from sqlalchemy import create_engine, Column, String, Text, ARRAY
 from sqlalchemy.dialects.postgresql import UUID as SQLAlchemyUUID
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
 import os
 import uuid
 import re
+from dotenv import load_dotenv
 load_dotenv()
-
-USER = os.getenv("SUPABASE_USER")
-PASSWORD = os.getenv("SUPABASE_PASSWORD")
-HOST = os.getenv("SUPABASE_HOST")
-PORT = os.getenv("SUPABASE_PORT")
+USER = os.environ.get("SUPABASE_USER")
+PASSWORD = os.environ.get("SUPABASE_PASSWORD")
+HOST = os.environ.get("SUPABASE_HOST")
+PORT = os.environ.get("SUPABASE_PORT")
 DBNAME = "postgres"
 
 DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
