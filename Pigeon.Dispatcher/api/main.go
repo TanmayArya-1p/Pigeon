@@ -9,10 +9,12 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"Pigeon.Dispatcher/handlers"
 	"Pigeon.Dispatcher/models"
 	rd "Pigeon.Dispatcher/rd"
+	"github.com/google/uuid"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/redis/go-redis/v9"
 )
@@ -149,6 +151,52 @@ func StatusDispatcherHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(stat)
+}
+
+func CampaignDispatchHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	var callbackURL = r.URL.Query().Get("callback")
+	var order models.CampaignDispatch
+	if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
+		http.Error(w, "Bad Request: Invalid JSON", http.StatusBadRequest)
+		return
+	}
+	if err := order.Validate(); err != nil {
+		http.Error(w, "Bad Request: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	trackerID := uuid.New().String()
+	json.NewEncoder(w).Encode(map[string]string{"message": "Order Being Processed", "tracker_id": trackerID})
+	go func() {
+		for _, i := range order.To {
+			dispatch := models.Dispatch{
+				ScheduledAt: order.ScheduledAt,
+				Message:     order.Message,
+			}
+			dispatch.Message.To = i
+			rd.PushOrder(client, dispatch)
+		}
+		if callbackURL != "" {
+			clt := http.Client{
+				Timeout: 5 * time.Second,
+			}
+			req, _ := http.NewRequest("POST", callbackURL, strings.NewReader(fmt.Sprintf(`{"tracker_id": "%s"}`, trackerID)))
+			req.Header.Set("Content-Type", "application/json")
+			resp, err := clt.Do(req)
+			if err != nil {
+				fmt.Println("Failed to send callback:", err)
+				return
+			}
+			defer resp.Body.Close()
+			if resp.StatusCode != http.StatusOK {
+				fmt.Println("Callback returned non-OK status:", resp.Status)
+			}
+		}
+	}()
 }
 
 func ServeAPI() {
