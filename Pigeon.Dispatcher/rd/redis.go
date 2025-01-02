@@ -15,7 +15,7 @@ import (
 
 var ctx = context.Background()
 var (
-	pendingGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+	PendingGauge = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "pigeon_dispatcher_pending_orders",
 		Help: "Number of pending orders in redis database",
 	})
@@ -33,7 +33,7 @@ func Connect() *redis.Client {
 	if len(val) == 0 {
 		client.Set(ctx, "orders", "[]", 0)
 	}
-	prometheus.MustRegister(pendingGauge)
+	prometheus.MustRegister(PendingGauge)
 	return client
 }
 
@@ -48,7 +48,7 @@ func FetchOrders(client *redis.Client) []models.Dispatch {
 	if err != nil {
 		log.Fatalf("Error unmarshalling JSON: %v", err)
 	}
-	pendingGauge.Set(float64(len(dispatches)))
+	PendingGauge.Set(float64(len(dispatches)))
 	return dispatches
 }
 
@@ -84,7 +84,7 @@ func PushOrder(client *redis.Client, dispatch models.Dispatch) []models.Dispatch
 		}
 	}
 	dispatches = append(dispatches[:i], append([]models.Dispatch{dispatch}, dispatches[i:]...)...)
-	pendingGauge.Set(float64(len(dispatches)))
+	PendingGauge.Set(float64(len(dispatches)))
 	val, _ := json.Marshal(dispatches)
 	client.Set(ctx, "orders", val, 0)
 	return dispatches

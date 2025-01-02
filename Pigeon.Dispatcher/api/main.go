@@ -1,11 +1,14 @@
 package api
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 
 	"Pigeon.Dispatcher/handlers"
 	"Pigeon.Dispatcher/models"
@@ -97,17 +100,55 @@ func StopDispatcherHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 type DispatcherStatus struct {
-	Running bool `json:"running"`
-	Pending int  `json:"pending"`
-	Served  int  `json:"served"`
+	Running        bool `json:"running"`
+	Pending        int  `json:"pending"`
+	Served         int  `json:"served"`
+	Deleted_Tokens int  `json:"deleted_tokens"`
+}
+
+func (DispatcherStatus) fetchMetrics() (DispatcherStatus, error) {
+	resp, err := http.Get("http://localhost:" + os.Getenv("DISPATCHER_PORT") + "/metrics")
+	if err != nil {
+		return DispatcherStatus{}, err
+	}
+	defer resp.Body.Close()
+	scanner := bufio.NewScanner(resp.Body)
+	status := DispatcherStatus{}
+	status.Running = running
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "pigeon_dispatcher_deleted_user_tokens") {
+			parts := strings.Fields(line)
+			if len(parts) == 2 {
+				status.Deleted_Tokens, _ = strconv.Atoi(parts[1])
+			}
+		} else if strings.HasPrefix(line, "pigeon_dispatcher_dispatched_notifications") {
+			parts := strings.Fields(line)
+			if len(parts) == 2 {
+				status.Served, _ = strconv.Atoi(parts[1])
+			}
+		} else if strings.HasPrefix(line, "pigeon_dispatcher_pending_orders") {
+			parts := strings.Fields(line)
+			if len(parts) == 2 {
+				status.Pending, _ = strconv.Atoi(parts[1])
+			}
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return DispatcherStatus{}, err
+	}
+
+	return status, nil
 }
 
 func StatusDispatcherHandler(w http.ResponseWriter, r *http.Request) {
-	if running {
-		fmt.Fprintln(w, "Worker Running")
-	} else {
-		fmt.Fprintln(w, "Worker Not Running")
+	status := DispatcherStatus{}
+	stat, err := status.fetchMetrics()
+	if err != nil {
+		http.Error(w, "Failed to fetch metrics: "+err.Error(), http.StatusInternalServerError)
+		return
 	}
+	json.NewEncoder(w).Encode(stat)
 }
 
 func ServeAPI() {
@@ -122,8 +163,9 @@ func ServeAPI() {
 	http.HandleFunc("/ping", ping)
 	http.HandleFunc("/start", authMiddleware(StartDispatcherHandler))
 	http.HandleFunc("/stop", authMiddleware(StopDispatcherHandler))
+	http.HandleFunc("/status", StatusDispatcherHandler)
 	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(":"+os.Getenv("DISPATCHER_PORT"), nil)
 }
 
 // func main() {
