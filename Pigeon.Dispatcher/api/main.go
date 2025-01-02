@@ -12,6 +12,7 @@ import (
 	"Pigeon.Dispatcher/handlers"
 	"Pigeon.Dispatcher/models"
 	rd "Pigeon.Dispatcher/rd"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -123,7 +124,7 @@ func ServeAPI() {
 	http.HandleFunc("/ping", ping)
 	http.HandleFunc("/start", authMiddleware(StartDispatcherHandler))
 	http.HandleFunc("/stop", authMiddleware(StopDispatcherHandler))
-
+	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(":8000", nil)
 }
 
