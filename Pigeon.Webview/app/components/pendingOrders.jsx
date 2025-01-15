@@ -14,7 +14,7 @@ function formatDate(date) {
     });
   }
 
-export default function PendingOrdersList({Iscollapsible , limit =7}) {
+export default function PendingOrdersList({Iscollapsible , limit =5}) {
     const dispatcherStatus = useContext(DispatcherStatusContext);   
     useEffect( () => {
         if(limit==-1) {
@@ -70,8 +70,8 @@ export default function PendingOrdersList({Iscollapsible , limit =7}) {
             <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
               <td colSpan="5" className=" text-center">
                 <button
-                  onClick={() => console.log("lol")}
-                  className="px-4 py-2 w-full bg-inherit text-white rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                  onClick={() => window.location.href = "/pending_orders"}
+                  className="px-4 text-center py-2 w-full bg-inherit text-white rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 >
                   ...
                 </button>
@@ -80,6 +80,7 @@ export default function PendingOrdersList({Iscollapsible , limit =7}) {
           )}
             </tbody>
         </table>
+        <div className="h-10"></div>
     </div>
     </>
     
