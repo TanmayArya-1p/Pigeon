@@ -4,7 +4,7 @@ import axios from 'axios';
 export const DispatcherStatusContext = createContext();
 
 export const DispatcherStatusProvider = ({ children }) => {
-  const [dispatcherStatus, setDispatcherStatus] = useState({ running: false });
+  const [dispatcherStatus, setDispatcherStatus] = useState({running: false, pending: 0, served: 0, deleted_tokens: 0, pending_orders: Array(0)});
 
   async function __worker() {
     let url = "http://localhost:8000/status";

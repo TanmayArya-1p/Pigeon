@@ -1,5 +1,6 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
+import PendingOrdersList from "../components/pendingOrders";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,5 +10,11 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <Welcome />;
+  return <>
+    <div className = "display-flex flex-row w-[60%] ml-40">
+
+      <div className="text-4xl mb-6 ">Pending Orders</div>
+      <PendingOrdersList />  
+    </div>
+      </>
 }

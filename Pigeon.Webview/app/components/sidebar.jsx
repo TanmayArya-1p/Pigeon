@@ -3,7 +3,6 @@ import { NavLink } from 'react-router';
 import pigeonLogo from './../../assets/pigeon.png';
 import {DispatcherStatusContext } from './dispatcherStatusWorker';
 
-
 export default function Sidebar() {
     //const [dispatcherStatus, setDispatcherStatus] = useRecoilState(dispatcherStatusAtom);
     //console.log(dispatcherStatusAtom , useRecoilState(dispatcherStatusAtom))
@@ -19,7 +18,7 @@ export default function Sidebar() {
             fetch("http://localhost:8000/stop"  , {headers: authHeader}).then((r) => r.json().then((a)=>{console.log("Starter Response ",a)}))
         }
         else{
-            fetch("http://localhost:8000/start"  , {headers: authHeader}).then((r) => r.json().then((a)=>{console.log("Starter Response ",a)}))
+            fetch("http://localhost:8000/start?interval=5"  , {headers: authHeader}).then((r) => r.json().then((a)=>{console.log("Starter Response ",a)}))
         }
     }
     return (
