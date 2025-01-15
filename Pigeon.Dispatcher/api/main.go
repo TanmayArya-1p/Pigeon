@@ -21,6 +21,7 @@ import (
 
 func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		secret_rec := r.Header.Get("Authorization")
 		if secret_rec != os.Getenv("DISPATCHER_AUTH_SECRET") {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -30,6 +31,17 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if r.Method == "OPTIONS" {
+			return
+		}
+		next(w, r)
+	}
+}
 func PushMessageValidationMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
@@ -88,6 +100,7 @@ func dispatchHTTPHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ping(w http.ResponseWriter, r *http.Request) {
+
 	fmt.Fprintln(w, "Pong")
 }
 
@@ -95,6 +108,7 @@ var worker chan bool
 var running = false
 
 func StartDispatcherHandler(w http.ResponseWriter, r *http.Request) {
+
 	if running {
 		http.Error(w, "Worker Already Running", http.StatusConflict)
 		return
@@ -114,11 +128,12 @@ func StartDispatcherHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func StopDispatcherHandler(w http.ResponseWriter, r *http.Request) {
+
 	if !running {
 		http.Error(w, "Worker Not Running", http.StatusConflict)
 		return
 	}
-	handlers.StopDispatchWorker(worker)
+	go handlers.StopDispatchWorker(worker)
 	running = false
 	fmt.Fprintln(w, "Dispatch Worker Terminated")
 }
@@ -223,12 +238,12 @@ func ServeAPI() {
 		h = middleware(h)
 	}
 	http.HandleFunc("/dispatch", h)
-	http.HandleFunc("/campaign", authMiddleware(CampaignDispatchValidator(CampaignDispatchHandler)))
+	http.HandleFunc("/campaign", corsMiddleware(authMiddleware(CampaignDispatchValidator(CampaignDispatchHandler))))
 	http.HandleFunc("/pingAuth", authMiddleware(ping))
 	http.HandleFunc("/ping", ping)
-	http.HandleFunc("/start", authMiddleware(StartDispatcherHandler))
-	http.HandleFunc("/stop", authMiddleware(StopDispatcherHandler))
-	http.HandleFunc("/status", StatusDispatcherHandler)
+	http.HandleFunc("/start", corsMiddleware(authMiddleware(StartDispatcherHandler)))
+	http.HandleFunc("/stop", corsMiddleware(authMiddleware(StopDispatcherHandler)))
+	http.HandleFunc("/status", corsMiddleware(StatusDispatcherHandler))
 	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(":"+os.Getenv("DISPATCHER_PORT"), nil)
 }

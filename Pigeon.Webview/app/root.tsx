@@ -6,9 +6,12 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
+import Sidebar from "./components/sidebar";
+import { config } from "dotenv";
+import { DispatcherStatusProvider } from "./components/DispatcherStatusWorker.jsx";
+// config();
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -34,7 +37,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <DispatcherStatusProvider>
+          <div className="app-container flex">
+            <Sidebar />
+            <main className="main-content flex-grow flex justify-center items-center">
+              {children}
+            </main>
+          </div>
+        </DispatcherStatusProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
