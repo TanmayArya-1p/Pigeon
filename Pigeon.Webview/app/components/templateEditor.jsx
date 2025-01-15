@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Tooltip } from 'react-tooltip'
 
-export default function TemplateEditor({ text, setText }) {
+export default function TemplateEditor({ text, setText , title }) {
   const [highlightedText, setHighlightedText] = useState('');
   const [highlightedList, setHighlightedList] = useState([]);
   const editorRef = useRef(null);
@@ -13,7 +13,6 @@ export default function TemplateEditor({ text, setText }) {
   const handleInputChange = (e) => {
     const newText = e.target.innerText;
     setText(newText);
-    onChange(newText);
   };
 
   const highlightText = (text) => {
@@ -96,6 +95,8 @@ export default function TemplateEditor({ text, setText }) {
             <Tooltip id="tooltip" />
 
             <div className="text-gray-500 ml-1.5 font-mono text-sm mt-">TemplateText</div>
+            <div className="text-gray-500 ml-1.5 font-mono text-sm ml-10 font-semibold">{title}</div>
+
 
 
 
