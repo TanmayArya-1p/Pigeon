@@ -1,10 +1,26 @@
 import {DispatcherStatusContext } from './dispatcherStatusWorker';
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
-export default function PendingOrdersList({Iscollapsible}) {
-    const dispatcherStatus = useContext(DispatcherStatusContext);
+function formatDate(date) {
+    console.log(date,typeof date)
+    return new Date(date).toLocaleString('en-US', {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true 
+    });
+  }
 
+export default function PendingOrdersList({Iscollapsible , limit =7}) {
+    const dispatcherStatus = useContext(DispatcherStatusContext);   
+    useEffect( () => {
+        if(limit==-1) {
+            limit = 2*dispatcherStatus.pending_orders.length
+        }
+    })
     return <>
 
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-full">
@@ -29,17 +45,17 @@ export default function PendingOrdersList({Iscollapsible}) {
                 </tr>
             </thead>
             <tbody>
-                {dispatcherStatus.pending_orders.slice(0,20).map((order, index) => {
+                {dispatcherStatus.pending_orders.slice(0,limit).map((order, index) => {
                     console.log("Mapping " , order , Array.isArray(dispatcherStatus.pending_orders))
                     return <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700" key={index}>
                         <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
-                            {index}
+                            {index+1}
                         </th>
                         <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
                             {order.message.to}
                         </th>
                         <td className="px-6 py-4 text-center">
-                            {Date(order.scheduled_at)}
+                            {formatDate(order.scheduled_at)}
                         </td>
                         <td className="px-6 py-4 text-center">
                             
@@ -50,7 +66,18 @@ export default function PendingOrdersList({Iscollapsible}) {
                         </td>
                     </tr>
                 })}
-                {dispatcherStatus.pending_orders > 20 ? <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"></tr> : <></>}
+          {limit!=-1 && dispatcherStatus.pending_orders.length > limit && (
+            <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+              <td colSpan="5" className=" text-center">
+                <button
+                  onClick={() => console.log("lol")}
+                  className="px-4 py-2 w-full bg-inherit text-white rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                >
+                  ...
+                </button>
+              </td>
+            </tr>
+          )}
             </tbody>
         </table>
     </div>

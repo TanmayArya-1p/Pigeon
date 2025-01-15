@@ -11,10 +11,11 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return <>
-    <div className = "display-flex flex-row w-[60%] ml-40">
-
-      <div className="text-4xl mb-6 ">Pending Orders</div>
-      <PendingOrdersList />  
+  <div className="flex-1 w-full h-full">
+    <div className="flex flex-col items-start w-[75%] ml-[20%] mt-[10%]">
+        <div className="text-4xl mb-6">Pending Orders</div>
+        <PendingOrdersList />
     </div>
-      </>
+  </div>
+  </>
 }
