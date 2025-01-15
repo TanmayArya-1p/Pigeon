@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import {useLocation} from "react-router";
 import axios from "axios"
+import { ToastContainer, toast } from 'react-toastify';
+import React from "react";
+import { BadgeCheck, CircleAlert, Info, TriangleAlert } from 'lucide-react';
 
 
 export function meta({}) {
@@ -34,6 +37,7 @@ export function DispatchChoiceTab() {
                 </a>
             </li>
         </ul>
+        
     );
 }
 
@@ -45,7 +49,7 @@ function SingleTargetDispatch(props) {
     const [title , setTitle] = useState("")
     const [body , setBody] = useState("")
     const [scheduledAt , setScheduledAt] = useState("")
-
+    //TODO: PREVIEW ENGINE
 
     function submitDispatch() {
         let data = JSON.stringify({
@@ -72,9 +76,11 @@ function SingleTargetDispatch(props) {
         .then((response) => {
             console.log(JSON.stringify(response.data));
             //TODO: CREATE ALERTS
+            toast.success("Successfully Pushed Order")
         })
         .catch((error) => {
             console.log(error);
+            toast.error(`Error in Pushing Order: ${error}`)
         });
 
     }
@@ -134,10 +140,11 @@ function CampaignDispatch(props) {
         axios.request(config)
         .then((response) => {
             console.log(JSON.stringify(response.data));
-            //TODO: CREATE ALERTS
+            toast.success("Successfully Pushed Order")
         })
         .catch((error) => {
             console.log(error);
+            toast.error(`Error in pushing order: ${error}`)
         });
 
     }
@@ -161,6 +168,13 @@ function CampaignDispatch(props) {
             <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-gray-900 rounded-md group-hover:bg-opacity-0">
                 Dispatch
             </span>
+            
+        </button>   
+        <button onClick={()=>toast.info("fafw")} className="mt-5 relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                Dispatch
+            </span>
+            
         </button>   
     </div>
 }
@@ -181,6 +195,32 @@ export default function DispatchPage(props) {
       </div>
       <div className="h-10"></div>
     </div>
+    <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        icon={({ type, theme }) => {
+            switch (type) {
+              case 'info':
+                return <Info className="stroke-indigo-400" />;
+              case 'error':
+                return <CircleAlert className="stroke-red-500" />;
+              case 'success':
+                return <BadgeCheck className="stroke-green-500" />;
+              case 'warning':
+                return <TriangleAlert className="stroke-yellow-500" />;
+              default:
+                return null;
+            }
+          }}
+    />
 
     </>
 }

@@ -14,9 +14,11 @@
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "isbot": "^5.1.17",
+    "lucide-react": "^0.471.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.1.1",
+    "react-toastify": "^11.0.2",
     "recoil": "^0.7.7"
   },
   "devDependencies": {
