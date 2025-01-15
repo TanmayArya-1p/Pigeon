@@ -7,7 +7,7 @@ import { DispatcherStatusContext } from "../components/dispatcherStatusWorker";
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Pigeon" },
-    { name: "description", content: "Welcome to React Router!" },
+    { name: "description", content: "Pigeon Home" },
   ];
 }
 

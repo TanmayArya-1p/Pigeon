@@ -3,6 +3,7 @@ import { type RouteConfig, index, route } from "@react-router/dev/routes";
 export default [
     index("routes/home.tsx"),
     route("pending_orders", "routes/pending_orders.jsx"),
+    route("dispatch", "routes/dispatch.jsx"),
     route("*", "routes/not_found.jsx"),
 
 

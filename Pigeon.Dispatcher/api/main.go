@@ -237,7 +237,7 @@ func ServeAPI() {
 	for _, middleware := range middlewares {
 		h = middleware(h)
 	}
-	http.HandleFunc("/dispatch", h)
+	http.HandleFunc("/dispatch", corsMiddleware(h))
 	http.HandleFunc("/campaign", corsMiddleware(authMiddleware(CampaignDispatchValidator(CampaignDispatchHandler))))
 	http.HandleFunc("/pingAuth", authMiddleware(ping))
 	http.HandleFunc("/ping", ping)

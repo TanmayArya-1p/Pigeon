@@ -16,11 +16,9 @@ function formatDate(date) {
 
 export default function PendingOrdersList({Iscollapsible , limit =5}) {
     const dispatcherStatus = useContext(DispatcherStatusContext);   
-    useEffect( () => {
-        if(limit==-1) {
-            limit = 2*dispatcherStatus.pending_orders.length
-        }
-    })
+    if(limit==-1) {
+        limit = dispatcherStatus.pending_orders.length
+    }
     return <>
 
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-full">
@@ -67,7 +65,7 @@ export default function PendingOrdersList({Iscollapsible , limit =5}) {
                     </tr>
                 })}
           {limit!=-1 && dispatcherStatus.pending_orders.length > limit && (
-            <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+            <tr className="odd:bg-white rounded-md odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
               <td colSpan="5" className=" text-center">
                 <button
                   onClick={() => window.location.href = "/pending_orders"}
