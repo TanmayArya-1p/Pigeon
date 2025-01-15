@@ -4,6 +4,8 @@ export default [
     index("routes/home.tsx"),
     route("pending_orders", "routes/pending_orders.jsx"),
     route("dispatch", "routes/dispatch.jsx"),
+    route("templates", "routes/templates.jsx"),
+    route("create_template", "routes/create_template.jsx"),
     route("*", "routes/not_found.jsx"),
 
 

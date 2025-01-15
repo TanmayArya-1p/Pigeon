@@ -69,7 +69,7 @@ export default function PendingOrdersList({Iscollapsible , limit =5}) {
               <td colSpan="5" className=" text-center">
                 <button
                   onClick={() => window.location.href = "/pending_orders"}
-                  className="px-4 text-center py-2 w-full bg-inherit text-white rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                  className="px-4 text-center py-2 w-full bg-inherit text-white rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50  hover:bg-gray-700"
                 >
                   ...
                 </button>
