@@ -5,12 +5,21 @@ import { BadgeCheck, CircleAlert, Info, TriangleAlert } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import TemplateViewer from "../components/templateViewer";
 
+
+export function meta({}) {
+    return [
+      { title: "Loading Template" },
+      { name: "description", content: "Template View" },
+    ];
+}
+
 export default function TemplatePage() {
     let { id } = useParams();
     const [loading, setLoading] = useState(true)
     const [template,setTemplate] = useState()
     const [target , setTarget] = useState("")
     const [params , setParams] = useState({})
+    const [scheduledAt , setScheduledAt] = useState("")
 
 
     const handleCopy = () => {
@@ -20,6 +29,10 @@ export default function TemplatePage() {
             toast.error('Failed to copy: ', err);
         });
     };
+
+
+      
+      
 
 
     async function fetchTemplate(tid){
@@ -40,6 +53,7 @@ export default function TemplatePage() {
             toast.success("Success Fetching Template");
             setTemplate(response.data)
             setLoading(false)
+            document.title = response.data.name
             response.data.params.forEach((a) => params[a] = "")
 
         })
@@ -50,6 +64,32 @@ export default function TemplatePage() {
         });
 
 
+    }
+
+    async function HandleDispatch() {
+        let data ={
+            "scheduled_at" : parseInt(scheduledAt),
+            "targets" : target.trim().split(","),
+            "params" : params,
+        }
+       
+        let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'http://localhost:5000/dispatch/'+id,
+        headers: { 
+            'Content-Type': 'application/json'
+        },
+        data : data
+        };
+          
+        axios.request(config)
+        .then((response) => {
+        toast.success("Template Notification Dispatched");
+        })
+        .catch((error) => {
+        toast.error("Failed to Dispatch Notification")
+        });
     }
 
     useEffect(()=> {
@@ -93,8 +133,13 @@ export default function TemplatePage() {
                     </div>
                     <div>
                         <div className="ml-20 mt-5 w-full">
-                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Target</label>
-                            <input type="text" id="target" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={name} onChange={(e) => setName(e.target.value)} placeholder="ExponentPushToken[xxx]" required />
+                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Targets</label>
+                            <input type="text" id="target" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={target} onChange={(e) => setTarget(e.target.value)} placeholder="ExponentPushToken[](Comma Separated)" required />
+
+                        </div>
+                        <div className="ml-20 mt-5 w-full">
+                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Scheduled At</label>
+                            <input type="text" id="target" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} placeholder="Unix Epoch Time" required />
 
                         </div>
                         {template.params && template.params.map((param, index) => (
@@ -115,6 +160,15 @@ export default function TemplatePage() {
                                 />
                             </div>
                         ))}
+                        <button onClick={()=>HandleDispatch()} className="w-[100%] mt-10 ml-20 relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="black" className="size-6 mr-4 ml-4">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                            </svg>
+
+                            <span className="w-full relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            Dispatch
+                            </span>
+                        </button>
                     </div>
 
                 </div>
