@@ -12,7 +12,7 @@ export default function TemplateCard({template}) {
     };
 
     return (
-        <a href="#" className="block p-4 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+        <a href={`/template/${template.id}`} className="block p-4 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
             <div className="flex flex-col items-center justify-center">
                 <div className="text-lg text-white truncate w-40 text-center">{template.name}</div>
                 <div className="flex items-center mt-2">

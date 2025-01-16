@@ -6,6 +6,8 @@ export default [
     route("dispatch", "routes/dispatch.jsx"),
     route("templates", "routes/templates.jsx"),
     route("create_template", "routes/create_template.jsx"),
+    route("template/:id", "routes/template.jsx"),
+
     route("*", "routes/not_found.jsx"),
 
 
