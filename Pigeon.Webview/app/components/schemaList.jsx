@@ -26,7 +26,7 @@ export default function TemplateList({templateListState , setTemplateListState})
     useEffect(() => {
       setSchemas()
       let cle = setInterval(setSchemas , 10000)
-      return () => clearInterval(cle)
+      return async () => clearInterval(cle)
     }, [])
 
     return <>
