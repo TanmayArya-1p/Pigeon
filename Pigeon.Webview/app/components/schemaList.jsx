@@ -2,10 +2,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import TemplateCard from "./templateCard"
 import { useEffect , useState } from 'react';
 
-
 export default function TemplateList({templateListState , setTemplateListState}) {
   const [searchParam , setSearchParam] = useState("")
-
+  const [loading,setLoading] = useState(true)
 
 
     async function setSchemas() {
@@ -18,6 +17,7 @@ export default function TemplateList({templateListState , setTemplateListState})
             });
             const data = await response.json();
             setTemplateListState(data);
+            setLoading(false)
         } catch (error) {
           toast.error("Failed to Fetch Templates: " + error)
         }
@@ -60,7 +60,19 @@ export default function TemplateList({templateListState , setTemplateListState})
 
     </div>
 
-    {templateListState.filter((t)=> t.name.toLowerCase().includes(searchParam.toLowerCase())).length==0? <div className="w-full mt-10 text-xl text-center text-gray-500">No Templates Found</div>:null}
+    <ThreeDots
+  visible={true}
+  height="80"
+  width="80"
+  color="#4fa94d"
+  radius="9"
+  ariaLabel="three-dots-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  />
+    {loading ? <div className="w-full mt-10 text-xl text-center text-gray-500">Loading Templates</div>:null}
+
+    {!loading && templateListState.filter((t)=> t.name.toLowerCase().includes(searchParam.toLowerCase())).length==0? <div className="w-full mt-10 text-xl text-center text-gray-500">No Templates Found</div>:null}
 
 
 

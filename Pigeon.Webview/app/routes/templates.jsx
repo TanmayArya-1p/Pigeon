@@ -3,7 +3,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import TemplateList from '../components/schemaList';
 import { useState } from 'react';
 
-
 export function meta({}) {
     return [
       { title: "Pigeon/Templates" },
@@ -24,6 +23,7 @@ export default function templatePage(props) {
                 <TemplateList templateListState={tList} setTemplateListState={setTList}></TemplateList>
             </div>
         </div>
+
         <ToastContainer
         position="bottom-right"
         autoClose={5000}
