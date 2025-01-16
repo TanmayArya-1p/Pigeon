@@ -2,17 +2,22 @@ import {DispatcherStatusContext } from './dispatcherStatusWorker';
 
 import React, { useContext, useEffect } from 'react';
 
-function formatDate(date) {
-    console.log(date,typeof date)
-    return new Date(date).toLocaleString('en-US', {
-      month: 'short',
-      day: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true 
-    });
-  }
+function formatDate(epochTime) {
+    const date = new Date(epochTime * 1000);
+    const timeOptions = {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    };
+    const dateOptions = {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    };
+    const formattedTime = date.toLocaleString('en-US', timeOptions);
+    const formattedDate = date.toLocaleString('en-US', dateOptions);
+    return `${formattedTime} ${formattedDate}`;
+}
 
 export default function PendingOrdersList({Iscollapsible , limit =5}) {
     const dispatcherStatus = useContext(DispatcherStatusContext);   
