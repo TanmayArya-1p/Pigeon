@@ -4,7 +4,7 @@ import TemplateEditor from '../components/templateEditor';
 import axios from "axios"
 import { ToastContainer, toast } from 'react-toastify';
 import { BadgeCheck, CircleAlert, Info, TriangleAlert } from 'lucide-react';
-
+import TemplateViewer from '../components/templateViewer';
 
 export function meta({}) {
     return [
@@ -68,6 +68,7 @@ export default function createTemplatePage(props) {
                         <TemplateEditor text={body} setText={setBody} title={"Body"}></TemplateEditor>
                         <div className="h-10"></div>
                         <TemplateEditor text={title} setText={setTitle} title={"Title"}></TemplateEditor>
+                        {/* <TemplateViewer body={"afawf {blah}  af {tities}"} title={"fawfawf"}></TemplateViewer> */}
                     </div>
                 </div>
             </div>
