@@ -2,6 +2,7 @@
   "name": "pigeon-webview",
   "private": true,
   "type": "module",
+  "homepage" : "./",
   "scripts": {
     "build": "cross-env NODE_ENV=production react-router build",
     "dev": "react-router dev",
