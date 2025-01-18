@@ -1,0 +1,15 @@
+services:
+  dispatcher:
+    build: /Pigeon.Dispatcher
+    ports:
+      - "8000:8000"
+  
+  schema_engine:
+    build: /Pigeon.SchemaEngine
+    ports:
+      - "5000:5000"
+  
+  webview:
+    build: /Pigeon.WebView
+    ports:
+      - "5173:3000"
