@@ -2,11 +2,11 @@
   "name": "pigeon-webview",
   "private": true,
   "type": "module",
-  "homepage" : "http://localhost:3000/",
+  "homepage" : "./",
   "scripts": {
     "build": "cross-env NODE_ENV=production react-router build",
     "dev": "react-router dev",
-    "start": "cross-env NODE_ENV=production react-router-serve ./build/server/index.js",
+    "start": "cross-env NODE_ENV=production PORT=8010 react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
