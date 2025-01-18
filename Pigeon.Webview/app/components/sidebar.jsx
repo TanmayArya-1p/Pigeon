@@ -2,6 +2,7 @@ import React, { use, useState , useEffect , useContext } from 'react';
 import { NavLink } from 'react-router';
 import pigeonLogo from './../../assets/pigeon.png';
 import {DispatcherStatusContext } from './dispatcherStatusWorker';
+import cfg from "./../config.json"
 
 export default function Sidebar() {
     //const [dispatcherStatus, setDispatcherStatus] = useRecoilState(dispatcherStatusAtom);
@@ -11,14 +12,14 @@ export default function Sidebar() {
 
     let authHeader = new Headers()
     authHeader.append('Content-Type', 'application/json')
-    authHeader.append('Authorization', 'nil')
+    authHeader.append('Authorization', cfg.DISPATCHER_AUTH_TOKEN)
     function toggleRunningStatus() {
         console.log("TRIED TO TOGGLE")
         if(dispatcherStatus.running){
-            fetch("http://localhost:8000/stop"  , {headers: authHeader}).then((r) => r.json().then((a)=>{console.log("Starter Response ",a)}))
+            fetch(cfg.DISPATCHER_URL+"/stop"  , {headers: authHeader}).then((r) => r.json().then((a)=>{console.log("Starter Response ",a)}))
         }
         else{
-            fetch("http://localhost:8000/start?interval=5"  , {headers: authHeader}).then((r) => r.json().then((a)=>{console.log("Starter Response ",a)}))
+            fetch(cfg.DISPATCHER_URL+"/start?interval=5"  , {headers: authHeader}).then((r) => r.json().then((a)=>{console.log("Starter Response ",a)}))
         }
     }
     return (

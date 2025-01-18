@@ -4,6 +4,7 @@ import axios from "axios"
 import { ToastContainer, toast } from 'react-toastify';
 import React from "react";
 import { BadgeCheck, CircleAlert, Info, TriangleAlert } from 'lucide-react';
+import cfg from "./../config.json"
 
 
 export function meta({}) {
@@ -60,13 +61,12 @@ function SingleTargetDispatch(props) {
             "title": title
         }
         });
-
         let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'http://localhost:8000/dispatch',
+        url: cfg.DISPATCHER_URL+'/dispatch',
         headers: { 
-            'Authorization': 'nil', 
+            'Authorization': cfg.DISPATCHER_AUTH_TOKEN, 
             'Content-Type': 'application/json'
         },
         data : data
@@ -128,9 +128,9 @@ function CampaignDispatch(props) {
         let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'http://localhost:8000/campaign',
+        url: cfg.DISPATCHER_URL+'/campaign',
         headers: { 
-            'Authorization': 'nil', 
+            'Authorization': cfg.DISPATCHER_AUTH_TOKEN, 
             'Content-Type': 'application/json'
         },
         data : data

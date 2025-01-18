@@ -4,7 +4,7 @@ import axios from 'axios'
 import { BadgeCheck, CircleAlert, Info, TriangleAlert } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import TemplateViewer from "../components/templateViewer";
-
+import cfg from "./../config.json"
 
 export function meta({}) {
     return [
@@ -40,9 +40,9 @@ export default function TemplatePage() {
         let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `http://localhost:5000/schema/${tid}`,
+        url: cfg.SCHEMA_ENGINE_URL+`/schema/${tid}`,
         headers: { 
-            'Authorization': 'nil', 
+            'Authorization': cfg.SCHEMA_ENGINE_AUTH_TOKEN, 
             'Content-Type': 'application/json'
         },
         };
@@ -75,7 +75,10 @@ export default function TemplatePage() {
         let config = {
         method: 'delete',
         maxBodyLength: Infinity,
-        url: 'http://localhost:5000/schema/'+id
+        url: cfg.SCHEMA_ENGINE_URL+'/schema/'+id,
+        headers : {
+            'Authorization': cfg.SCHEMA_ENGINE_AUTH_TOKEN
+        }
         };
 
         axios.request(config)
@@ -99,9 +102,10 @@ export default function TemplatePage() {
         let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'http://localhost:5000/dispatch/'+id,
+        url: cfg.SCHEMA_ENGINE_URL+'/dispatch/'+id,
         headers: { 
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Authorization" : cfg.SCHEMA_ENGINE_AUTH_TOKEN
         },
         data : data
         };

@@ -8,7 +8,8 @@ class GenSchema:
     def __init__(self, schema: Schema):
         self.schema = schema
         self.params = {}
-    
+        self.gentitle = ""
+        self.genbody = ""
     def __replace_placeholders(self,text: str, params: dict):
         pattern = r"\{(.*?)\}"
         return re.sub(pattern, lambda match: params.get(match.group(1), match.group(0)), text)
@@ -20,8 +21,8 @@ class GenSchema:
 
     def generate(self, params: dict):
         self.__validate_params(params)
-        self.schema.title = self.__replace_placeholders(self.schema.title, params)
-        self.schema.body = self.__replace_placeholders(self.schema.body, params)
+        self.gentitle = self.__replace_placeholders(str(self.schema.title), params)
+        self.genbody = self.__replace_placeholders(str(self.schema.body), params)
 
 
 class ExponentPushToken(str):
@@ -51,8 +52,8 @@ def dispatchGenSchema(gschema: GenSchema , targets : list ,  scheduled_at : int)
         "scheduled_at": scheduled_at,
         "to": targets,
         "message": {
-            "title": gschema.schema.title,
-            "body": gschema.schema.body
+            "title": gschema.gentitle,
+            "body": gschema.genbody
         }
         })
         headers = {

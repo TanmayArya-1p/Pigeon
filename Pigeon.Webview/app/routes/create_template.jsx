@@ -5,6 +5,7 @@ import axios from "axios"
 import { ToastContainer, toast } from 'react-toastify';
 import { BadgeCheck, CircleAlert, Info, TriangleAlert } from 'lucide-react';
 import TemplateViewer from '../components/templateViewer';
+import cfg from "./../config.json"
 
 export function meta({}) {
     return [
@@ -28,9 +29,9 @@ export default function createTemplatePage(props) {
         let config = {
           method: 'post',
           maxBodyLength: Infinity,
-          url: 'http://localhost:5000/schema',
+          url: cfg.SCHEMA_ENGINE_URL+'/schema',
           headers: { 
-            'Authorization': 'nil', 
+            'Authorization': cfg.SCHEMA_ENGINE_AUTH_TOKEN, 
             'Content-Type': 'application/json'
           },
           data : data

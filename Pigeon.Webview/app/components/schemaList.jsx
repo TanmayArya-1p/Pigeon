@@ -1,6 +1,7 @@
 import { ToastContainer, toast } from 'react-toastify';
 import TemplateCard from "./templateCard"
 import { useEffect , useState } from 'react';
+import cfg from "./../config.json"
 
 export default function TemplateList({templateListState , setTemplateListState}) {
   const [searchParam , setSearchParam] = useState("")
@@ -8,11 +9,11 @@ export default function TemplateList({templateListState , setTemplateListState})
 
 
     async function setSchemas() {
-        let url = "http://localhost:5000/schema";
+        let url = cfg.SCHEMA_ENGINE_URL+"/schema";
         try {
             const response = await fetch(url, {
             headers: {
-              "Authorization": "nil"
+              "Authorization": cfg.SCHEMA_ENGINE_AUTH_TOKEN
             }
             });
             const data = await response.json();

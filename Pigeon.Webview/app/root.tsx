@@ -9,9 +9,7 @@ import {
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
 import Sidebar from "./components/sidebar";
-import { config } from "dotenv";
 import { DispatcherStatusProvider } from "./components/DispatcherStatusWorker.jsx";
-// config();
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
