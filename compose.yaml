@@ -11,5 +11,5 @@ services:
   
   webview:
     build: /Pigeon.WebView
-    ports:
-      - "5173:3000"
+    network_mode: "host"
+  
