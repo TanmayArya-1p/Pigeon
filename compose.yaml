@@ -2,14 +2,9 @@ services:
   dispatcher:
     build: /Pigeon.Dispatcher
     ports:
-      - "8000:8000"
+      - "6011:6011"
   
   schema_engine:
     build: /Pigeon.SchemaEngine
     ports:
-      - "5000:5000"
-  
-  webview:
-    build: /Pigeon.WebView
-    network_mode: "host"
-  
+      - "6010:6010"
