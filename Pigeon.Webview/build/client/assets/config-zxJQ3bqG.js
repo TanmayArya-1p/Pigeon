@@ -1,0 +1,1 @@
+const E="https://pigeon-dispatcher.onetincan.tech",n="https://pigeon-schema-engine.onetincan.tech",_="nil",t="nil",c={DISPATCHER_URL:E,SCHEMA_ENGINE_URL:n,DISPATCHER_AUTH_TOKEN:_,SCHEMA_ENGINE_AUTH_TOKEN:t};export{c};
