@@ -75,9 +75,7 @@ export default function TemplateList({templateListState , setTemplateListState})
 
     {!loading && templateListState.filter((t)=> t.name.toLowerCase().includes(searchParam.toLowerCase())).length==0? <div className="w-full mt-10 text-xl text-center text-gray-500">No Templates Found</div>:null}
 
-
-
-    <div className="p-4 mt-4 ml-6">
+    {!loading &&     <div className="p-4 mt-4 ml-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
       {templateListState.filter((t)=> t.name.toLowerCase().includes(searchParam.toLowerCase())).map((template, index) => (
         <TemplateCard key={index} template={template} />
@@ -86,5 +84,8 @@ export default function TemplateList({templateListState , setTemplateListState})
 
       <ToastContainer />
     </div>
+    }
+
+
     </>
 }

@@ -9,6 +9,10 @@ body {
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
+  @media (prefers-color-scheme: light) {
+    color-scheme: dark;
+  }
+
 }
 .app-container {
   display: flex;

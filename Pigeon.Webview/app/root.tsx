@@ -9,7 +9,7 @@ import {
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
 import Sidebar from "./components/sidebar";
-import { DispatcherStatusProvider } from "./components/DispatcherStatusWorker.jsx";
+import { DispatcherStatusProvider } from "./components/dispatcherStatusWorker";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
