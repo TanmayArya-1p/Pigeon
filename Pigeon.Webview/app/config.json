@@ -1,6 +1,6 @@
 {
-    "DISPATCHER_URL": "http://localhost:8000",
-    "SCHEMA_ENGINE_URL" : "http://localhost:5000",
+    "DISPATCHER_URL": "https://pigeon-dispatcher.onetincan.tech",
+    "SCHEMA_ENGINE_URL" : "https://pigeon-schema-engine.onetincan.tech",
     "DISPATCHER_AUTH_TOKEN" : "nil",
     "SCHEMA_ENGINE_AUTH_TOKEN" : "nil"
 }
