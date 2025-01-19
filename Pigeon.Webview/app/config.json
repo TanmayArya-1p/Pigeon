@@ -1,6 +1,6 @@
 {
     "DISPATCHER_URL": "https://pigeon-dispatcher.onetincan.tech",
     "SCHEMA_ENGINE_URL" : "https://pigeon-schema-engine.onetincan.tech",
-    "DISPATCHER_AUTH_TOKEN" : "nil",
-    "SCHEMA_ENGINE_AUTH_TOKEN" : "nil"
+    "DISPATCHER_AUTH_TOKEN" : "lol",
+    "SCHEMA_ENGINE_AUTH_TOKEN" : "lol"
 }
